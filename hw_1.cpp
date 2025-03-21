@@ -80,6 +80,7 @@ public:
 		}
 	}
 
+
 	void findAmountOfProducts() {
 		for (Product product : products) {
 			amountOfProducts += product.getAmountOfProduct();
