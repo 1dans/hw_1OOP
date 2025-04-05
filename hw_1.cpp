@@ -59,7 +59,6 @@ public:
 	float getAssistantBenefit() {
 		return benefit;
 	}
-
 	int getAmountOfClients() {
 		return amountOfClients;
 	}
@@ -85,6 +84,10 @@ public:
 		for (Product product : products) {
 			amountOfProducts += product.getAmountOfProduct();
 		}
+	}
+
+	void setLocation(string loc) {
+		location = loc;
 	}
 
 	int getAmountOfProducts() {
@@ -128,7 +131,15 @@ public:
 			cout << "Оберіть кількість (доступно: "<<maxamount<<")\n";
 			cin >> amount;
 			if (amount > maxamount) cout << "Перевищена кількість товарів";
-			
+			else if (amount < 0) cout << "Введіть коректну кількість товару";
+			else if (amount == 0) cout << "Введіть коректну кількість товару";
+			else if (amount <= maxamount) {
+				product.soldProduct(amount);
+				product.calculateFinalPrice(bonuses);
+				product.amountOfProductsSold = amount;
+				chosenProducts.push_back(product);
+			}
+
 			else {
 				product.amountOfProductsSold = amount;
 				chosenProducts.push_back(product);
@@ -136,6 +147,80 @@ public:
 		}
 	}
 
+};
+
+class OnlineShop : public Shop
+{
+private:
+	string siteName;
+
+public:
+	vector<Client> clients;
+	vector<Product> products;
+	vector<Assistant> assistants;
+	vector<Shop> shops;
+
+
+	void addShop(Shop shop) {
+		shops.push_back(shop);
+	}
+	
+	void addClient(Client client) {
+		clients.push_back(client);
+	}
+
+	void addAssistant(Assistant assistant) {
+		assistants.push_back(assistant);
+	}
+
+	void addProduct(Product product) {
+		products.push_back(product);
+	}
+	void setSiteName(string name) {
+		siteName = name;
+	}
+
+	string getSiteName() {
+		return siteName;
+	}
+};
+
+class Supplier : public Product
+{
+private:
+	string name = "", phoneNumber="";
+public:
+	int money; //гроші, які магазин може використати для закупівлі товару
+	vector<Product> neededProducts;
+	vector<Product> suppliedProducts;
+	vector<Shop> shops;
+
+	void addSuppliedProduct(Product product, int amount) {
+		if (product.price*amount>money) {
+			cout << "Недостатньо грошей для закупівлі товару";
+			return;
+		}
+		else {
+			money -= product.price * amount;
+			suppliedProducts.push_back(product);
+		}
+	}
+
+	void addNeededProduct(Product product) {
+		neededProducts.push_back(product);
+	}
+
+	void setName(string ownName) {
+		name = ownName;
+	}
+
+	void setPhoneNumber(string phone) {
+		phoneNumber = phone;
+	}
+
+	string getName() {
+		return name;
+	}
 };
 
 int main()
